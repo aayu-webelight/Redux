@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { addProduct, Product } from "./products.slice";
+import { useSelector } from "react-redux";
+import { addProductAsync, getErrorMessage, Product } from "./products.slice";
 import { useAppDispatch } from "./store.hooks";
 
 
@@ -11,6 +12,7 @@ const ProductForm: React.FC = () => {
   })
 
   const dispatch=useAppDispatch()
+  const errorMessage=useSelector(getErrorMessage)
 
   const handleChange=({target:{name,value}}:React.ChangeEvent<HTMLInputElement>)=>{
     setProduct(prev=>{
@@ -23,18 +25,19 @@ const ProductForm: React.FC = () => {
   const handleSubmit=(e:React.FormEvent)=>{
     e.preventDefault()
     // console.log({product})
-    dispatch(addProduct(product))
+    dispatch(addProductAsync(product))
   }
 
   const {title,price,id}=product
   return (
     <>
       <h2>Add Game to store</h2>
+      {errorMessage && <span>{errorMessage}</span>}
       <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="game title" name="title" value={title} onChange={handleChange} />
-        <input type="number" placeholder="price" name="price" value={price} onChange={handleChange} />
-        <input type="text" placeholder="id" name="id" value={id} onChange={handleChange}/>
-        <button type="submit">Add Price</button>
+        <input style={{border :errorMessage ? '1px solid red':'1px solid black'}} type="text" placeholder="game title" name="title" value={title} onChange={handleChange} />
+        <input style={{border :errorMessage ? '1px solid red':'1px solid black'}} type="number" placeholder="price" name="price" value={price} onChange={handleChange} />
+        <input style={{border :errorMessage ? '1px solid red':'1px solid black'}} type="text" placeholder="id" name="id" value={id} onChange={handleChange}/>
+        <button style={{backgroundColor :errorMessage ? 'red' : 'lightgray'}} type="submit">Add Price</button>
       </form>
     </>
   );
